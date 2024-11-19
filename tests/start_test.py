@@ -47,6 +47,17 @@ async def test_create_and_delete_qr_code():
             "size": 10,
         }
         create_response = await ac.post("/qr-codes/", json=qr_request, headers=headers)
+        
+        # Print detailed debugging information
+        print("Request Body:", qr_request)
+        print("Response Status Code:", create_response.status_code)
+        try:
+            response_json = create_response.json()
+            print("Response Body:", response_json)
+        except Exception as e:
+            print("Error parsing response JSON:", e)
+            print("Response Text:", create_response.text)
+        
         assert create_response.status_code in [201, 409]  # Created or already exists
 
         # If the QR code was created, attempt to delete it
