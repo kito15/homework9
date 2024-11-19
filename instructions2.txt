@@ -1,0 +1,216 @@
+
+Alright. So what we're gonna do is, in the last class and video, we were going over REST APIs and just the general idea. And the main stuff that we gotta understand is you got Roy Fielding made REST. He's the one that wrote the dissertation about the architecture of the Internet or the representational state transfer. We have HATIOS.
+
+And HATIOS basically is an acronym. So R. E. S. T.
+
+Is representational state transfer. And rest is the overall idea. And the whole concept, if you get into it, just to try to state is about data. It's about what data you have in a system at this moment. And we've talked about state previously.
+
+And you have the vertical scaling, which is really scaling something in related. Let's call it primary store primary storage memory CPU. Okay? And then we have secondary storage as horizontal scaling. Okay?
+
+Like, if we're trying to scale to lots of people, lots of users, we're gonna do horizontal scaling. If we're trying to take a process that takes time for one process, then we have to do vertical scaling. Like, video games are like vertical scaling. The the faster your computer runs, the better the video game the better the better the video game runs. And, well, we have to understand this is all about state, and state is data.
+
+And really, if you just break it down if you say vertical scaling, you're talking about CPU and memory. If you say horizontal scaling, you're talking about really, like, secondary storage. K? You're talking about because the data has to be essentially, quote, offline. It has to be in a database, in a file system, somewhere other than in the live memory of the computer.
+
+And so if you get into rest, what you're saying is representation of state and transferring it over a network. So you're taking the representation of data in a database in some system, some external system. And then that's how that like, the bank account. That's the information about your bank account. That's the information about your orders.
+
+That's the information about the state of the data related to a particular application. And if you think about it for yourself, it's what you see online whenever you look at your order history on Amazon.com or whatever. And what we're doing is we're having that state of data and then transferring it over the Internet to a client that's a mobile phone, a web browser, a television, whatever. It doesn't matter it doesn't matter what the client is. And in REST, we have this we use the HTTP protocol, and that's sitting on top of the Internet, which is the IP protocol.
+
+So the Internet is the network. Okay? The HTTP protocol is how what REST uses as an agreed upon set of procedures and specifications of how data works to then transfer the state of something in a database essentially, usually, over to the client, and then the client reconstitutes that state and then displays it in some interface that you see usually. K? That's the gist of it.
+
+We're we're just talking about representation, a copy of the state and transferring it somewhere. Does this make sense? And it's important to kinda like wrap your head around that a little bit because, like, you know, not everybody here is gonna be a developer and some people are developers and some people whatever. But a lot of times, you hear about things like React or Next. Js, which is also React, or Angular.
+
+And these are all front end libraries, which we don't get into in this class. But these are all client libraries that take rest like data transfers, JSON data transfers, and then reconstitute them into user interfaces that you see in your cell phone apps and in your websites and everything. K? And in order to be a front end engineer or a back end engineer, you kinda a really good way to think about it is that you wanna transfer for every page someone looks at, you have to transfer the state, the data that's gonna make that page completely in the in the network in the rest request and response that comes back because that's where the Hatios comes in. And we we'll see an example of it in our program, which we've looked at before, but we're just gonna we're gonna look into the code today.
+
+I just want to review getting into the so this is like a Hatios response. See, like, if we were gonna if we were gonna display a bank account information on a on a bank on an app, We wanna know the account number. We would need to show the balance, and then we would wanna have links for making a deposit, making a withdraw, doing a transfer, or closing the account. Like, we those are, like, things that we could do on this account. And so the idea of Hadios is that in the request, the client doesn't need to think about anything.
+
+The client is literally just gonna take this code or this this JSON and then render it, meaning create a user interface on the screen for it to display this. And everything that it needs for that user interface is sent in the request. Okay? So let's look at how we do this. So a lot of what your assignment is gonna be is I'm gonna remove code in random places.
+
+Well, maybe not random, but certain places. And then you're gonna have to debug it and fix it. There's too much code to just say, hey. Look. You go write everything, and and I don't want you to do that because, really, what you gotta focus on see, we're doing this in Python, but the vocabulary and the techniques of pretty much everything we're doing is how all languages work.
+
+We could do this in c sharp. We could do this in Python. We could do this in JavaScript. We could do this in pretty much whatever language you would want. And the architecture of how this is operating would be the same, essentially.
+
+So what we're using here is another there's a few design patterns that we end up using. Alright? These are not in the object oriented design patterns. These are just what we call application architectural patterns. Just the overall just how does the application design.
+
+And one of the patterns that we're using is what's called MVC. So MVC is where you have a model, you have a view, and you have a controller. And the way it works is the model's the data. The view is the display or the in our case, it's gonna be the JSON response. That's the view of the data.
+
+And then the controller is what takes the model, the data, and puts it with the view and sends it to you. And then that's the route. So the route is the controller. You'll see models. Models are models, and then views are the responses.
+
+They don't call it that here, but that's this is the general architectural pattern so that you would see MVC used everywhere. So there's always usually this it it when we have applications, they're almost always broken down into some either this pattern or some variation of of this. This is kind of like an advanced version of Repel that requests. And so because you always kind of have your data that you do data functionality, then you have to have some way of displaying it or some way of outputting it. That's the view.
+
+The control and then the controller is what puts those two things together. If you would look at how they architect Windows in a way, it's kinda like it's not MVC, but it's like MVC or something. It's like like like sort of MVC's what you're gonna need to know how to do, like, is trace is follow the bouncing ball. You're gonna wanna be able to debug this thing in and and because it's gonna be a repeated pattern. It's always gonna be the same kind of thing.
+
+And so let's just what we're gonna do is I'm gonna start start setting you up here. And let me actually close this down. So I'm gonna clone this. I'm gonna go through this step by step because this is, like, where you're gonna see new stuff. So I'm gonna go open up PowerShell.
+
+I'm just going into a directory. And I'm doing the old one. And so now I'm gonna do a git clone. I'm gonna take the URL or the git clone address, and then we're just gonna go through a series of steps just like pretty much normal as we've been setting up projects. So we're gonna need to do a Python 3 dashm venvenv.
+
+Then I'm gonna do a source venv bin activate. And then I'll do a code period to open up Versus Code. And a lot of what we're doing is really two things. We're learning how to start, stop, how to run the application, and how the application functions because you're gonna want to get this debugging cycle of where you look for problems because it has to be one of these places. It either has to be a problem with the request coming in, or it has to be a problem inside the controller, or it has to be a problem with the data, or it has to be a problem with the response.
+
+It's like it's like request, processing, response. And that cycle of those 3 areas where you can have a problem is really what you debug. It's like so we got to know where the where the data flows because there's nothing like I was saying the other day is the reason why I started making you do those calculator and everything is because if you had been writing scripts or even not writing code at all and you thought it was gonna just write one long thing, that's just not how it's going to work. You're going to have to get used to thinking about things being broken up in different files. And, like, I call it follow the bouncing ball, follow the trail, because there's no, like, linear path that you can just see how everything works.
+
+And you need to know where to go to look for each problem. So that's where like, I'm gonna remove code, and then you're gonna have to search around to find it. And then what we're gonna do now is we're gonna start the application, and then we're going to look at tracing exactly the files, what what happens where as the as the request comes in as it's doing its job. So the first thing we want to do is we want to make sure that the thing works. So I'm gonna do a deactivate.
+
+So I think I have a double. We'll see if it works. It's like I got that double parentheses. We'll see if this is an issue. Anyway, so what I'm gonna do is I'm gonna make sure that I'm going to do a docker compose up dash dash build up.
+
+And if I get this problem, it just means that Docker is not started. And then we're gonna wanna go and go to localhostforward/docs. And that takes us to the open a open API spec. And this is an industry standard. Like, all APIs use this.
+
+In fact, like, just to kind of show you how this like, what the future is, not the future, what the now is. So that's the that's the spec written in JSON. So it's like a web service to, like, give you the spec. And then if we go to chatgpt I just wanna show you because, like, this is What can you make me an API client for this? I forgot to say the language.
+
+Man, it's doing it in Python. So, like, I'm doing AI work right now, like, at large language models, advertising for the summer. Like, honestly, this summer is gonna have a mind blowing IS 6 90 class. Mind blowing. Because I'm gonna I'm gonna show you, like, a year's worth of large language model engineering, which isn't hard.
+
+Like, honestly, it's not hard, but there's a bunch of stuff to know, like little details. It's like an inch deep and a mile wide because what we're gonna do is we're gonna be looking at how do you integrate databases and web services with the large language models, the like, the OpenAI API and this library called langchain. And this is the this is gonna be the what we call the stack of AI engineering. Like, that's basically what we're gonna do in IS690. It's it's gonna be pretty crazy.
+
+Like, well, I'm already working on what it we're doing right now, and it's mind blowing. So just to give you an idea, like, this web service, like that JSON spec, it's able to create a client library in Python itself. That's like just the chat gpt. But what happens is is that, like, we have langchain API retriever. And, essentially, what you're able to do with large language models and, like, to understand the JSON, how this is all connected together.
+
+And I just kinda wanna explain, like, this is a the AI can actually be given, not like through chat gpt. We're talking, like, programming a Python application with using this library, langchain, which connects to LLM models. Like, it'll do chat it'll do OpenAI or different models. This is the this is the industry standard for large language model programming. Like, this is like a framework to make applications in LLMs.
+
+And what can actually happen is the LLM, you can give it the JSON spec to the the, like, the link in the library, and then it will actually learn how to use your your API through the JSON spec. Like, it will figure out how to make the rest calls. And, like, so for example, you could make an application that's like, make QR codes and how this is you gotta send a URL with a, you gotta send a link to it, and this is how you I want you to produce QR codes. It actually will figure out how to make the rest calls itself and make the API calls using the langchain library. Like, you don't have to explain it.
+
+It reads it. Like, it's like with database stuff. You just have to give it set it up where it does a command to load the schema of your database, and then it knows how to write the SQL queries to get whatever information you want out of the database. It does it on the fly. And that's basically the type of stuff that we're gonna be doing in the in the summer.
+
+Because with, like, this class is web services and, middleware. And you can't have a web service and a middleware without a without a particular application, and our particular application is doing LLM stuff. How about the quantics? What did you say? How about the quantics?
+
+It will never be offered again other than the summer. There's only 1 IS690. It's in the summer online, 12 weeks. That's what it is. And it just because it's like, IS690 is for, like, hey.
+
+Maybe you might have learned something in this class, but I had to keep some information back. Like, I couldn't I can't take you through the entire full stack engineering like in one class, but we do that in IS690, and then you'll learn about some pretty fancy stuff. Anyway, so the way this works is and you wanna get used to using this. A lot of this is about, like, how do you just run the bus. That's like it's like driving a big school bus or something.
+
+And you're and you just got to learn how to run it. And so one of the first techniques of running it is the starting it up. But we also want to oh, there it is. I want you to learn how to do this because you're gonna do this practice it now and get used to it. So right now, we don't have a database.
+
+But next week, we're going to database town. We're going to have a Postgres database server. So you're going to end up having the Nginx server, the Postgres server, the Python server. Like, you're getting a larger architecture. That's why we have to use Docker because the number of different tools that we have to use in order to execute an application just keeps getting more and more.
+
+And so you've got to have your Docker Compose and be able to deal with this so that you can work. And if you look in here in the Docker Compose, what we have is when Docker starts up, it's running the code, and that's where it puts the QR codes. But it's sharing our my app directory. And the gist of this is that you can edit on your local, but the changes are gonna be run inside the Docker container. So the interpreter of your program is mainly inside the Docker container or is inside the Docker container.
+
+And whenever we get to database town, the database is gonna be running inside of Docker town. So you have to get used to running your application inside of Docker, not on your local directly. Sometimes you still do. Like, I can run pytest locally, but, like, I didn't do pip install. But if I if I do docker compose fast API or execute, which is the same as the docker run I mean, sorry, is is just docker execute fast API pytest.
+
+And I'll get this error. And, basically, it's because we don't have a QR codes directory. So just do mkdir QR codes. And let me put that in my Readme here because I forgot to do that. Because there's a permission problem.
+
+So, like, you gotta make the directory and then start it up. So I'm just control c to start this, and I just want to restart the thing. And the trick that you want to be able to do is we want to be able to run so Docker Compose, so we're running the command inside of Docker, Execute, meaning it's going to run it in the thing. And then we say the name of the container and then the command that we want. So and now it runs.
+
+It just it doesn't there's a little bit of an issue where if you don't have the folder created, before you start the container for the first time, it doesn't have the right permissions to write a folder into your directory. So you've got to create it. And that's what the problem is when you first run it. But we want to get used to doing this, because you're going to always want to run see, like the Docker world, Dockertown, is your production environment. And if we go back to the 12 Factor app, And I like to go down the checklist.
+
+But we have our code base managed. We have our dependencies. We got our config. Now we're having services. We're going to see that, like, we have a service layer inside of the API in a minute.
+
+We're building. We're releasing. We're running. That's like the dot the GitHub actions. That's the CICD.
+
+Processes, execute the app as 1 or more stateless processes. We're we're following stateless processes. We have we we have a port binding. That's the port binding is whenever we're starting it up, and it runs on port 8,000 concurrency. We're scared we're that's back to the to the stateless, and we're basically able to have, multiple copies of this running.
+
+Disposability, that's like the docker, the containerization, graceful startup, shutdown. And then here, what we're getting into is that we want to be when we're doing development, we want the development done in the closest environment to production. So we don't want to do the development and the testing on our local because our local really can't tell us if it's really going to run in the destination in the in in wherever it's gonna be deployed. So we we don't wanna test and run anything on local. We wanna run it inside the Docker container because, basically, if it runs locally and you don't do it in the Docker container, you're gonna find out that stuff won't work in the Docker container, and then you gotta redo it or you gotta make major changes.
+
+And so you just wanna start getting into the habit of using Docker. Docker, run your application in Docker. That's how it's gonna work. Because once we have Postgres, there's gonna be a database server, and that's only gonna be available in Docker Town. And you're gonna have to run tests.
+
+You're gonna have to run everything inside of inside of Docker. And what you'll learn next week is how to set up Postgres in a GitHub action so that GitHub actions actually will run the Postgres database server so that you can do full testing of your architecture inside of GitHub actions. So it's a complete test of everything. And then we have logs. And then we haven't done admin processes, but that's kind of why I taught you how to do the Repel app, like the command line app.
+
+So if we had more time and we were making a full fledged application, we would and maybe we might do this we might make a console app, like a little console app, to be able to create QR codes or do administration. Because you don't want to have to engineer a whole administration interface and make a UI or anything just to run little commands like drop the database or clear this record or do something. You want to have its own separate app. And then those console apps, like the Repel thing we did, instead of doing calculator, you would be doing Python commands to send API calls to your API through the through the console app. So like that, I just want you to understand, like, there's a method to my madness.
+
+You're you're getting to see every aspect of professional application engineering at a basic level. We're not doing super fancy, but I'm trying to have it take you through the entire stack of all the little things that you need to be able to do. Alright. So going back to here is just remember, you want to do docker compose exec for execute. That means run inside of a container.
+
+And then you want to say the name of the container and then the command you want to run, which is pytest, and your pytest should pass. Now what's going to happen in the homework is that we're gonna have to you're gonna have to trace the execution of the request. So, like, first, let's just go back over to local host docs. And then let's just go from step by step. So one thing I would do is I would check if I go to my GET request, you click try it out, execute, and you're gonna get a not authenticated error.
+
+K. Because we're not logged in. You're gonna have to go up to authorize, type admin, and then the password is secret. And we click authorize and close it. And at this point, we would be able to get a QR code, but we don't have any QR codes.
+
+And I would probably change this and add a condition in the future where I would say, like, if there are no QR codes, I might return back a 404 error. I just didn't put that in here yet. But, like, I did handle like, so for example, we want to take a post and we want to do a make a QR code. We can hit execute. And what we want to look at here is the cURL request.
+
+So cURL just is a command line program that stands for CURL. It's a c library that executes API calls for going on HTTP. And we could actually take this. And if I pull up notepad and I just need to edit it a little bit because I wanna change to make example 2. We can take this and if I paste that, that's the cURL c program is sort of Python or any of these languages, like, that call make API calls, curl is like where it ends up.
+
+Like, Python calls curl when it makes an API request because, like, curl is the is the mega library. It's like the source of all API calls. And when I do this command, curl dash x post, that's the verb, and then this is all the headers and all the information, Then here is the response I get back from the API. So this is just using curl as the client for our API. And we do want to know how to do that.
+
+You want to know what curl is. You will find, like, you can download files with it. Sometimes you have to use it to download something from when you're on a server in a command line and you wanna pull a file in. You wanna test an API really quick. You just use cURL to be able to send a request to it and get a response back.
+
+It's a really, like, if you don't know curl, it's like you should learn bash, and you should take a little 15 minute tutorial on how curl how curl works. And maybe I'll put that in the assignment, just like a link to a good video about it. So what happens is that when this program starts, main dotpy is the starting point, the entry point for the application. And what happens is it just goes and sets up the logging, creates the directory, then this is all the data that's related to the API. That's what goes on the API home page.
+
+Whenever you look at when we look at the stuff that's up at the top here, that's where it all comes from, is that start up of app. And then here is the router. So the router is the controller. So remember we had model view control? So this, the router is the controller.
+
+Or let's say the router is where the controllers live. So these are the actual controllers. So this is a control like, this all this code here is the controller. And, like, that's the get request controller. And so what happens is is your request goes in.
+
+If the app doesn't start up, like, if you're for example, if I have main dot py and let's say that's the error, you would run pytest. And then this is gonna say it can't find the library. So then you'd have to fix this and then run pytest. Oops. You see, it would be real tedious to have to go to that API web page and test the API every time you made changes.
+
+That's why you have to know how to make unit tests because, basically, all programming jobs have something to do with making an API or using an API. And you can't do that unless you know how to make unit tests and and API using Py tests, unit tests, integration tests. Because it's literally too tedious. Like, you can't just be type like, you're going to have, like, 20 problems here. And you wouldn't want to have to go to the API home page to test it.
+
+So essentially, everything the API needs to do will eventually have to be inside your automated test. So it's like you you're you don't you get something to work with the API, you write an automated test. Test get the API to work, automated tests. This thing's already got the automated test, and you're just gonna have to keep running them and finding the finding the bugs and fixing them. So, like, that's what would happen if we change this.
+
+But what happens after it goes to the router? It goes to the controllers. And this is called route model binding. See, the controller's job because there's this idea of separation of concerns, where you break things apart into, like, where it needs to be. And the controller's job is to take the incoming request, perform take the data out of the request, call something else, call a function, call something else to do a job, and then send a response back.
+
+So the the technically, like, I left code in here because I got lazy. But I know that I need to refactor this. Again, I'm going to do it not before I give it to you because I kind of want you to see the whole thing. I don't want to make it too abstract. But all this code eventually should just be where I get the response or the request comes in.
+
+It sends the data to a function, and then the function just handles whatever has to be done, and then the response goes back. So almost all of this code that's in here of this logic and everything, that really should be moved out into what we call a service. So this is the QR code service. So I have some of it done. Like, we have the basically, I should just move more logic from my route into my service functionality.
+
+Anyway So, like, for example, one of the errors you might be seeing is you use we have this schema dot py, and schema dot py is where we put the model. So, like, right now, we don't have a database, but we use the pedantic library. And I'm not going to go too into this, but I'll probably put a video in the assignment about this. This is a super important library to become very familiar with. So this is the main Python library for doing the three things, but they're all related.
+
+It's JSON serialization, JSON deserialization, and validation. So what it's doing is we use PyDantic, so we have a a request. So this is taking the JSON, like, that's coming in the request, turning it into an object, and validating that the JSON that it received matches what the request should be. So it should have a URL field. If it doesn't have a URL field, like if I delete that, and then let's run a test and see what the error is.
+
+We're gonna get a 4 22 unprocessable entity. And, basically, that's the let's translate that to regular people speak. Unprocessed unprocessedable entity means that the request does not validate. So, like, it was sending data that doesn't match. So then we would have a URL, And that works.
+
+Okay? So, like, if you see an error called un unprocessable entity, that error is gonna be that there's something wrong with the request model. So unprocessable entity means that it the the that's like a the way you gotta think about this is, like, imagine there's a club, you know, a dance club, and there's a bouncer at the dance club. And Pydantic is basically your bouncer at the doubt dance club. It's what throws the request out that says, hey.
+
+This isn't this isn't a valid request. Get out of here. Get out of here. Okay? You didn't come dressed for the club.
+
+Get out of here. Now we can have responses. So so that's the JSON serialization is when we take the request of JSON and turn it into an object. And then the JSON deserialization is sorry. The JSON deserialization is whenever we take the request of JSON and turn it into an object.
+
+And then the serialization is whenever we take the object and turn it back into the response going out, to the JSON going out. And you kind of make sense. It's like if you're going to serialize and deserialize JSON in that process of taking it in and taking it out, then you'd want to check whether or not it was what it was supposed to be. And that's what these schemas do. That's what Pydantic, the library, does.
+
+And Pydantic has a bunch of, like, we're just using a little bit of functionality in it because, like, you can have more customized errors or more fancy validation. There's just different things that you can do with it. And as we go on, we'll start to see that. So if I had like, here's my QR code response. That's the data coming back.
+
+Let's change this. And so it no longer has a message field. It's like the message is now going to be let's see what happens when we run the test. Oh, I'm gonna have to put a test in for that, and I can do that. Let's just I forgot to put in oh, yeah.
+
+Here we go. I just didn't put in And let me just show you, like, a little chat GPT action here. So here's my test that it doesn't have it doesn't check the incoming request. Like, it doesn't check the data coming back, and that's important. So let me just get this.
+
+So test, create, and delete. Oops. So what I wanna do now is I wanna add a, I wanna add part of the test that's gonna check the response that to make sure that the response matches the pydantic response model. So we'll just go yield chatgpt Let's say, look at my test. And then I'm gonna take my pedantic model of the response, and I'm gonna tell it here here is my pedantic model response.
+
+I want you to give me 2 tests, one for create and one for delete. Actually, just give me I want you to update the test to check that the correct response data is being returned by the API. And so I'm just gonna write out the test, and we'll test we'll check this. And so here's where we're getting our asserts. This is basically the main thing that we need right here because it's checking that the response that we have is matching the criteria that are here.
+
+See, like, you don't wanna keep looking at those API responses. Does this make sense? Like, that's that's it it stinks to do that. And you've got to be able to test quickly because you're going to make changes. You want to test really quickly.
+
+So what you want to do is, like, some people use things like, there's a thing called Postman or these other programs that are, like, 3rd party, like, sort of extra things that you use as other tools. But that's almost like extra work. You really just wanna build the tests with the checking of the responses in the test because that's, like, you don't want to have to look at those JSON responses. They can be actually really complicated to look through, and they have to be exactly right. So you want to be able to write the test to check the data in the JSON response, because that's what the client gets.
+
+So you've got to be able to do that. So what we're going to do here, let's just see if it is able to let's see if this code works. And it's just gonna add this, and let's just see. And it's good. And let's just change I might have actually put the test in with the misspelled message.
+
+So so, like, let's check this. If I change this, This should have changed. Well, I'll check this later. The anyway, I'm just not sure why I'm not sure why it's not, this should be right. Anyway, so what's going to happen is you have your router.
+
+The router is where essentially, it's taking the request, making the response. You have the models, the QR code response and the QR code request. Those are the models that determine whether what's going to be sent in and out. The pedantic is what validates it. Those are going to be found in the schema.
+
+Py file. All this QR code stuff isn't that important. The only thing to know is the base 64 encoding, which I think we talked about, that that's how we convert the file the URL into the file name and the file name into the URL. And then the service just sort of the logic is that the service is where your external like, you'll see this in the future with database, but, like, database or file system, anything that's a resource outside of your program, that goes in the that that type of code goes into the service area. So they call this a service oriented architecture.
+
+And basically, the controller I always remember it because the controller makes sandwiches. How do we make sandwiches? We have bread, and we have meat. The bread is the request. The response is the meat.
+
+And the controller makes sandwiches by putting the bread and the meat together to make sandwiches. Does this make a little sense of that metaphor? Just just remember you're making sandwiches. And that your your schemas are what's defining what your requests and your responses are gonna be. Because both this the the the in is going to be JSON in.
+
+The out is going to be JSON out. And pedantic is what's serializing and deserializing the JSON and validating it in that process of converting it in and out of the JSON format to be sent by the by the controller. And so in the homework, what you're basically going to do is I'll fix this test because I it it may not even be recognized, and I'm not a 100% sure why. Is that, like, changing all that code should have resulted in a a change, and I just have to look at it. But you're gonna see a bunch of little mistakes, and then those mistakes are basically gonna follow the bouncing ball.
+
+Like, I'm gonna put mistakes as you would have to debug through this process of going from the start up going from start up to the controller, from the controller to the response models, the request or the request model, mistakes inside the controller, mistakes inside of the of the response. Does this make sense? So, like, I'm gonna want you to trace through this. Like, your whole goal in this is just understand how to follow the bouncing ball of the request through the processing and know how to run running the the pie test and stuff. And I would get this done as quick as possible because what's coming next week is gonna be a lot.
+
+Just to kinda give you a preview of what's what's coming. And I'm not gonna give you all of this because, like, I'm gonna make you a little bit more I'm gonna make it a little bit simpler. But And when this one starts up, what you're gonna see is I might have a I might have left my so, like, I I forgot I closed the Pytest down I mean, the other one down, but let me just show you how you stop these. So, like, this is our containers running from the other one, but, like, I closed down the other window. So what I just have to do is go Docker.
+
+I just have to go into the folder of wherever I started the the service and then just type Docker Compose down, and then that'll shut it down. Because I can't be run like, if I would try to run this again, it would be like, it would tell me, like, the port can't be taken because you can only have one application on a port. So here, what I would do is docker compose up dash dash build. And we can take a look at this application. And what's gonna happen is is that you're gonna have a new functionality.
+
+This is just we're adding I might add one more thing, which is probably we're just gonna do this first is the event manager. And here, we still have the same basic admin secret. But we have This is what this is doing is you have events. You're creating events. So we're just starting to get into operating with a post crest database.
+
+And you'd see that, like, our Docker Compose has I think This is what I want. The Postgres branch. Sorry. So this is what you're gonna see is you have a Postgres database server, and what'll happen is you end up having event services. So these are all the database commands.
+
+So, like, just to kinda give you an idea, the you're still gonna have schemas, and these are the pedantic models, but these are the database models. So, like, going back to the model view control. So our view essentially is like pedantic. That's the JSON deserialization and serialization. The controller is the controller that we see for the route, and then the model is this.
+
+So this is the data. And what we do is I define a user class, and then we use a library called SQL alchemy, which is the main library for operating with the database in Python. So this is the pandas of database. And what it allows you to do is it's called an ORM, and that's like a type of live it's a architectural pattern. It's object relational mapper.
+
+So we're creating a class of user, and that's our object. That's our instance. But this is directly bound to the database. So one user is one record in the database. And what SQL Alchemy does is it allows us to define the properties, and then, for example, in our services, If we look at event service, these are all the database operations, and we could do pretty it's like there's no SQL.
+
+Like, it SQL Alchemy is writing the SQL for you. So, like, here, this is create event. This is the insert operation. So I just define the event. I fill out the field properties as, like, I was instantiating the object.
+
+They add the object to the what we call the session and then do a commit, which saves the change. So, like, you're gonna wanna learn you're gonna be learning, like, for the basically, the rest of the semester, we're gonna be working on SQL alchemy for the last few weeks, and we're gonna be doing different things with SQL alchemy and the records. Like, we're gonna have, users, events, relationships to see how that all all works. And then your final application, I haven't totally figured out exactly what it's gonna be, but it's probably gonna be a event registration system. And you're gonna have user sign up, registration, testing.
+
+And I think the the little thing because we already have QR code functionality, and I've been wanting to do this app because I I is essentially make it so that you can find you can register for an event through a QR code. Alright? Because, like, you can actually encode the URL. Like, a like, we're just using simple URLs with our with our QR code program right now. But you can actually encode, like, for example, the registration parameters in the QR code so that when somebody scans it and clicks on it, that that's gonna send a get request to the server to be able to to perform an operation.
+
+Like, the QR code can't do, posts. Like, it that it's stupid. That there's no way to make but it could do a get request. So that's basically what we're gonna be doing next week. And that's why, like so Postgres and this I just wanna show you this.
+
+It's like, Postgres is running inside the Docker Compose, and I have to be able to do Docker Compose up. So I have to start it up. Like, I have to have my containers running. And then I have to be able to do Docker, compose EXEC, py test. Oh, my bad.
+
+And the name of the container, and then that runs out the Pytest. Because it and that's checking the SQL the the SQL alchemy server. I mean, not that not it's check it's doing these tests inside the dark container using using Postgres. If you haven't heard of Postgres, Postgres is like the open source version of Oracle. Postgres is super widely used in the industry because it has a lot of functionality.
+
+It does a lot of different things, and it's been around for 35 years. So it's, like, an industry standard. You really wanna know Postgres. And let me see. What was the other thing?
+
+And I think this one is already updated with the workflow. So here, this is your GitHub action, and this is going to run Postgres inside of GitHub Actions so that your tests actually run correctly inside of GitHub Actions with the Postgres database server to make it real. See, like, this is the whole idea is that you're you're running the real infrastructure as close as possible with careful changes for certain reasons why you might need to change it to run it locally. And then Docker the Docker Compose essentially creates the entire environment of the application, and then it runs it. And then this way, whenever you're doing development, your your dev environment and your production environment are, like, 99% the same.
+
+And the only differences between them, you keep careful track of so that if there is an error in production, that you can kinda try to track it down to maybe that it's that difference or you know exactly what the difference is between the two. Because the biggest problem you have in tech, like, where you get yourself, like, in trouble, is when you don't know where that problem is, like, where you don't have a clue as to why this is happening. So just like you've learned with coding, you probably have realized it's easier to make one change and check it than it is to make a bunch of changes and not know what change actually caused the problem. And as these architectures get more and more complicated, the complexity of debugging increases, and you have to be ever more careful of making very small changes and tracking where those changes are. Because when you start having errors that have to do with really complicated networking database, the application, we're gonna learn about this thing called asynchronous operations.
+
+Like, this thing start getting really, really crazy. And you just have to get used to walking or crawling very slowly in what you do, not making mistakes. And if you do make a mistake, make sure that you're going from you did something to a broken state, and you know that what you did broke it, and then fixing it so that you're never, like, one step beyond where the actual problem is. Because the worst thing to do is to have a problem, spend hours not knowing what it is, and then find out it's something totally different than what you were working on. You've got to be able to keep the headlights on and keep focused on what that problem is.
+
+And if you do that, if you get used to doing that, there's nothing you can't do in tech. Like, there's nothing you as long as you have that behavior of, like, just break one thing and fix it and keep it really focused, you won't get in over your head. But if you just sort of haphazardly go about doing stuff, if you're not, like, detailed like this, you're just going to waste a whole lot of time. Like, you're never going to be able to survive doing a technology job. Alright, guys.
+
+So I'm going to shut it down now. And then you'll see that there's I'm gonna put a bunch of videos like for a few things in here. And you're gonna have to debug this thing from the things that the problems that I give you.
