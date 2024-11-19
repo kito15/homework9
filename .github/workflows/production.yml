@@ -55,14 +55,10 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD}}
           
       - name: Build and push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          push: true
-          tags: kito15/homework9:${{ github.sha }}
-          platforms: linux/amd64,linux/arm64
-          cache-from: type=registry,ref=kito15/homework9:cache
-          cache-to: type=inline,mode=max
-          
+        run: |
+          docker build -t kito15/homework9:${{ github.sha }} .
+          docker push kito15/homework9:${{ github.sha }}
+
       - name: Scan the Docker image
         uses: aquasecurity/trivy-action@master
         with:
